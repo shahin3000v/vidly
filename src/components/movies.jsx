@@ -11,16 +11,27 @@ class Movies extends Component {
     movies: [],
     genres: [],
     pageSize: 4,
-    currentPage: 1
+    currentPage: 1,
+    selectedGenre: { _id: -1, name: "All Genres" }
   };
 
   componentDidMount() {
-    this.setState({ movies: getMovies(), genres: getGenres() });
+    this.setState({
+      movies: getMovies(),
+      genres: [this.state.selectedGenre, ...getGenres()]
+    });
   }
 
-  deleteHandler = id => {
-    const movies = this.state.movies.filter(film => film._id !== id);
-    this.setState({ movies });
+  deleteHandler = (id, leng, currentPage) => {
+    console.log(leng);
+    if (leng === 1 && currentPage > 1) {
+      const movies = this.state.movies.filter(film => film._id !== id);
+      currentPage--;
+      this.setState({ movies, currentPage });
+    } else {
+      const movies = this.state.movies.filter(film => film._id !== id);
+      this.setState({ movies });
+    }
   };
   toggleLikeHandler = film => {
     let movies = this.state.movies;
@@ -34,22 +45,39 @@ class Movies extends Component {
     this.setState({ currentPage: page });
   };
   genreHandler = genre => {
-    console.log(genre);
+    this.setState({ selectedGenre: genre, currentPage: 1 });
   };
   render() {
-    const { length: count } = this.state.movies;
-    const { currentPage, pageSize, movies: allMovies } = this.state;
-    if (count === 0)
+    const { length } = this.state.movies;
+    const {
+      currentPage,
+      pageSize,
+      movies: allMovies,
+      selectedGenre
+    } = this.state;
+    if (length === 0) {
       return (
         <p className="h4 alert-warning mt-3">There is no record in database!</p>
       );
-    const movies = paginate(allMovies, currentPage, pageSize);
+    }
+    let filteredByGenre = [];
+    if (selectedGenre._id === -1) {
+      filteredByGenre = allMovies;
+    } else {
+      filteredByGenre = allMovies.filter(
+        m => m.genre._id === selectedGenre._id
+      );
+    }
+    // console.log(selectedGenre);  //why this line appears twice in console?
+    const count = filteredByGenre.length;
+    const showList = paginate(filteredByGenre, currentPage, pageSize);
 
     return (
       <div className="row">
         <div className="col-2">
           <ListGroup
             items={this.state.genres}
+            currentGenre={this.state.selectedGenre}
             onGenreSelect={this.genreHandler}
           />
         </div>
@@ -69,22 +97,29 @@ class Movies extends Component {
               </tr>
             </thead>
             <tbody>
-              {movies.map(film => (
-                <tr key={film._id}>
-                  <td>{film.title}</td>
-                  <td>{film.genre.name}</td>
-                  <td>{film.numberInStock}</td>
-                  <td>{film.dailyRentalRate}</td>
+              {showList.map(showListItem => (
+                <tr key={showListItem._id}>
+                  <td>{showListItem.title}</td>
+                  <td>{showListItem.genre.name}</td>
+                  <td>{showListItem.numberInStock}</td>
+                  <td>{showListItem.dailyRentalRate}</td>
                   <td>
                     <Like
-                      liked={film.liked}
-                      toggleLike={() => this.toggleLikeHandler(film)}
+                      liked={showListItem.liked}
+                      toggleLike={() => this.toggleLikeHandler(showListItem)}
                     />
                   </td>
                   <td>
                     <button
                       onClick={() => {
-                        this.deleteHandler(film._id);
+                        //2 argument akhar deleteHandler baraye hale bugiye ke vaghti kole
+                        //anasore yek safhe gheyr az safhaye avalo pak mikoni ke biad safhaye
+                        //ghablesh
+                        this.deleteHandler(
+                          showListItem._id,
+                          showList.length,
+                          currentPage
+                        );
                       }}
                       className="btn btn-danger btn-sm"
                     >
