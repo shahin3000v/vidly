@@ -1,21 +1,20 @@
 import React from "react";
 
 const ListGroup = props => {
-  const { items, currentGenre, onGenreSelect } = props;
-  console.log(currentGenre);
+  const { items, currentGenre, txtProp, vluProp, onGenreSelect } = props;
   return (
     <div className="list-group">
       {items.map(item => (
         <button
-          key={item._id}
+          key={item[txtProp]}
           onClick={() => onGenreSelect(item)}
           className={
-            currentGenre._id === item._id
+            currentGenre[vluProp] === item[vluProp]
               ? "list-group-item list-group-item-action active"
               : "list-group-item list-group-item-action"
           }
         >
-          {item.name}
+          {item[txtProp]}
         </button>
       ))}
     </div>

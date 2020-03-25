@@ -23,7 +23,6 @@ class Movies extends Component {
   }
 
   deleteHandler = (id, leng, currentPage) => {
-    console.log(leng);
     if (leng === 1 && currentPage > 1) {
       const movies = this.state.movies.filter(film => film._id !== id);
       currentPage--;
@@ -44,7 +43,7 @@ class Movies extends Component {
   paginationHandler = page => {
     this.setState({ currentPage: page });
   };
-  genreHandler = genre => {
+  genreSelectHandler = genre => {
     this.setState({ selectedGenre: genre, currentPage: 1 });
   };
   render() {
@@ -78,7 +77,9 @@ class Movies extends Component {
           <ListGroup
             items={this.state.genres}
             currentGenre={this.state.selectedGenre}
-            onGenreSelect={this.genreHandler}
+            txtProp="name"
+            vluProp="_id"
+            onGenreSelect={this.genreSelectHandler}
           />
         </div>
         <div className="col">
