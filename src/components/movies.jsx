@@ -12,21 +12,23 @@ class Movies extends Component {
     genres: [],
     pageSize: 4,
     currentPage: 1,
-    selectedGenre: { _id: -1, name: "All Genres" }
+    selectedGenre: {}
   };
 
   componentDidMount() {
+    const initGenre = { _id: 0, name: "All Genres" };
+    const genres = [initGenre, ...getGenres()];
     this.setState({
       movies: getMovies(),
-      genres: [this.state.selectedGenre, ...getGenres()]
+      genres,
+      selectedGenre: initGenre
     });
   }
 
-  deleteHandler = (id, leng, currentPage) => {
-    if (leng === 1 && currentPage > 1) {
+  deleteHandler = (id, leng) => {
+    if (leng === 1 && this.state.currentPage > 1) {
       const movies = this.state.movies.filter(film => film._id !== id);
-      currentPage--;
-      this.setState({ movies, currentPage });
+      this.setState({ movies, currentPage: this.state.currentPage - 1 });
     } else {
       const movies = this.state.movies.filter(film => film._id !== id);
       this.setState({ movies });
@@ -47,28 +49,22 @@ class Movies extends Component {
     this.setState({ selectedGenre: genre, currentPage: 1 });
   };
   render() {
-    const { length } = this.state.movies;
     const {
       currentPage,
       pageSize,
       movies: allMovies,
       selectedGenre
     } = this.state;
-    if (length === 0) {
+    if (this.state.movies.length === 0) {
       return (
         <p className="h4 alert-warning mt-3">There is no record in database!</p>
       );
     }
-    let filteredByGenre = [];
-    if (selectedGenre._id === -1) {
-      filteredByGenre = allMovies;
-    } else {
-      filteredByGenre = allMovies.filter(
-        m => m.genre._id === selectedGenre._id
-      );
-    }
-    // console.log(selectedGenre);  //why this line appears twice in console?
-    const count = filteredByGenre.length;
+    const filteredByGenre = selectedGenre._id
+      ? allMovies.filter(m => m.genre.name === selectedGenre.name)
+      : allMovies;
+
+    //console.log(selectedGenre); //why this line appears twice in console?
     const showList = paginate(filteredByGenre, currentPage, pageSize);
 
     return (
@@ -76,15 +72,13 @@ class Movies extends Component {
         <div className="col-2">
           <ListGroup
             items={this.state.genres}
-            currentGenre={this.state.selectedGenre}
-            txtProp="name"
-            vluProp="_id"
-            onGenreSelect={this.genreSelectHandler}
+            selectedItem={this.state.selectedGenre}
+            onItemSelect={this.genreSelectHandler}
           />
         </div>
         <div className="col">
           <p className="h4 alert-success mb-0">
-            Showing {count} movies in database
+            Showing {filteredByGenre.length} movies in database
           </p>
           <table className="table">
             <thead className="thead-dark">
@@ -113,14 +107,7 @@ class Movies extends Component {
                   <td>
                     <button
                       onClick={() => {
-                        //2 argument akhar deleteHandler baraye hale bugiye ke vaghti kole
-                        //anasore yek safhe gheyr az safhaye avalo pak mikoni ke biad safhaye
-                        //ghablesh
-                        this.deleteHandler(
-                          showListItem._id,
-                          showList.length,
-                          currentPage
-                        );
+                        this.deleteHandler(showListItem._id, showList.length);
                       }}
                       className="btn btn-danger btn-sm"
                     >
@@ -132,7 +119,7 @@ class Movies extends Component {
             </tbody>
           </table>
           <Pagination
-            itemsCount={count}
+            itemsCount={filteredByGenre.length}
             pageSize={pageSize}
             currentPage={currentPage}
             onPaginate={this.paginationHandler}
