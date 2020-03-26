@@ -81,8 +81,8 @@ class Movies extends Component {
             Showing {filteredByGenre.length} movies in database
           </p>
           <MoviesTable
-            likeIF={this.toggleLikeHandler}
-            deleteIF={this.deleteHandler}
+            likeMedium={this.toggleLikeHandler}
+            deleteMedium={this.deleteHandler}
             showList={showList}
           />
           <Pagination

@@ -2,7 +2,7 @@ import React from "react";
 import Like from "./common/like";
 
 const MoviesTable = props => {
-  const { showList, likeIF, deleteIF } = props;
+  const { showList, likeMedium, deleteMedium } = props;
   return (
     <table className="table">
       <thead className="thead-dark">
@@ -25,13 +25,13 @@ const MoviesTable = props => {
             <td>
               <Like
                 liked={showListItem.liked}
-                toggleLike={() => likeIF(showListItem)}
+                toggleLike={() => likeMedium(showListItem)}
               />
             </td>
             <td>
               <button
                 onClick={() => {
-                  deleteIF(showListItem._id, showList.length);
+                  deleteMedium(showListItem._id, showList.length);
                 }}
                 className="btn btn-danger btn-sm"
               >
