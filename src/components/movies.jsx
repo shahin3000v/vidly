@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import Like from "./common/like";
 import ListGroup from "./common/listGroup";
 import Pagination from "./common/pagination";
 import { paginate } from "../utils/paginate";
 import { getGenres } from "../services/fakeGenreService";
 import { getMovies } from "../services/fakeMovieService";
+import MoviesTable from "./moviesTable";
 
 class Movies extends Component {
   state = {
@@ -80,44 +80,11 @@ class Movies extends Component {
           <p className="h4 alert-success mb-0">
             Showing {filteredByGenre.length} movies in database
           </p>
-          <table className="table">
-            <thead className="thead-dark">
-              <tr>
-                <th style={{ width: "30%" }}>Title</th>
-                <th scope="col">Genre</th>
-                <th scope="col">Stock</th>
-                <th>Rate</th>
-                <th>Like</th>
-                <th>#</th>
-              </tr>
-            </thead>
-            <tbody>
-              {showList.map(showListItem => (
-                <tr key={showListItem._id}>
-                  <td>{showListItem.title}</td>
-                  <td>{showListItem.genre.name}</td>
-                  <td>{showListItem.numberInStock}</td>
-                  <td>{showListItem.dailyRentalRate}</td>
-                  <td>
-                    <Like
-                      liked={showListItem.liked}
-                      toggleLike={() => this.toggleLikeHandler(showListItem)}
-                    />
-                  </td>
-                  <td>
-                    <button
-                      onClick={() => {
-                        this.deleteHandler(showListItem._id, showList.length);
-                      }}
-                      className="btn btn-danger btn-sm"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <MoviesTable
+            likeIF={this.toggleLikeHandler}
+            deleteIF={this.deleteHandler}
+            showList={showList}
+          />
           <Pagination
             itemsCount={filteredByGenre.length}
             pageSize={pageSize}
