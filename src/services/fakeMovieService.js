@@ -15,7 +15,8 @@ const movies = [
     title: "Die Hard",
     genre: { _id: "5b21ca3eeb7f6fbccd471818", name: "Action" },
     numberInStock: 5,
-    dailyRentalRate: 2.5
+    dailyRentalRate: 2.5,
+    liked: true
   },
   {
     _id: "5b21ca3eeb7f6fbccd471817",
@@ -37,7 +38,8 @@ const movies = [
     title: "Airplane",
     genre: { _id: "5b21ca3eeb7f6fbccd471814", name: "Comedy" },
     numberInStock: 7,
-    dailyRentalRate: 3.5
+    dailyRentalRate: 3.5,
+    liked: true
   },
   {
     _id: "5b21ca3eeb7f6fbccd47181b",
@@ -69,28 +71,28 @@ const movies = [
   },
   {
     _id: "5b21ca3eeb7f6fbccds471821",
-    title: "The Avengers",
+    title: "The Avengers 1",
     genre: { _id: "5b21ca3eeb7f6fbccd471818", name: "Action" },
     numberInStock: 7,
     dailyRentalRate: 3.5
   },
   {
     _id: "5b21sca3eeb7f6fbcscd471821",
-    title: "The Avengers",
+    title: "The Avengers 2",
     genre: { _id: "5b21ca3eeb7f6fbccd471818", name: "Action" },
     numberInStock: 7,
     dailyRentalRate: 3.5
   },
   {
     _id: "5b21csssa3eeb7f6fbccd471821",
-    title: "The Avengers",
+    title: "The Avengers 3",
     genre: { _id: "5b21ca3eeb7f6fbccd471818", name: "Action" },
     numberInStock: 7,
     dailyRentalRate: 3.5
   },
   {
     _id: "5b21ca3eeb7f6fbcggcd471821",
-    title: "The Avengers",
+    title: "The Avengers 4",
     genre: { _id: "5b21ca3eeb7f6fbccd471818", name: "Action" },
     numberInStock: 7,
     dailyRentalRate: 3.5
