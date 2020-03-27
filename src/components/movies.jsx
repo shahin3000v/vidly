@@ -5,6 +5,7 @@ import { paginate } from "../utils/paginate";
 import { getGenres } from "../services/fakeGenreService";
 import { getMovies } from "../services/fakeMovieService";
 import MoviesTable from "./moviesTable";
+import _ from "lodash";
 
 class Movies extends Component {
   state = {
@@ -12,7 +13,8 @@ class Movies extends Component {
     genres: [],
     pageSize: 4,
     currentPage: 1,
-    selectedGenre: {}
+    selectedGenre: {},
+    sortColumn: { path: "title", order: "asc" }
   };
 
   componentDidMount() {
@@ -48,12 +50,21 @@ class Movies extends Component {
   genreSelectHandler = genre => {
     this.setState({ selectedGenre: genre, currentPage: 1 });
   };
+  sortHandler = sortColumn => {
+    // let order = "asc";
+    // if (this.state.sortColumn.path === path) {
+    //   order = this.state.sortColumn.order === "asc" ? "desc" : "asc";
+    // }
+    this.setState({ sortColumn });
+  };
+
   render() {
     const {
       currentPage,
       pageSize,
       movies: allMovies,
-      selectedGenre
+      selectedGenre,
+      sortColumn
     } = this.state;
     if (this.state.movies.length === 0) {
       return (
@@ -65,7 +76,12 @@ class Movies extends Component {
       : allMovies;
 
     //console.log(selectedGenre); //why this line appears twice in console?
-    const showList = paginate(filteredByGenre, currentPage, pageSize);
+    const sortedList = _.orderBy(
+      filteredByGenre,
+      [sortColumn.path],
+      [sortColumn.order]
+    );
+    const showList = paginate(sortedList, currentPage, pageSize);
 
     return (
       <div className="row">
@@ -83,7 +99,9 @@ class Movies extends Component {
           <MoviesTable
             likeMedium={this.toggleLikeHandler}
             deleteMedium={this.deleteHandler}
+            onSort={this.sortHandler}
             showList={showList}
+            sortColumn={sortColumn}
           />
           <Pagination
             itemsCount={filteredByGenre.length}
