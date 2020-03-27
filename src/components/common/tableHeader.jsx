@@ -20,11 +20,13 @@ class TableHeader extends Component {
       <thead className="thead-dark">
         <tr>
           {this.props.columns.map(column => (
-            <th
-              key={column.label || column.key}
-              onClick={() => this.raiseSort(column.path)}
-            >
-              {column.label} {this.renderSortIcon(column)}
+            <th key={column.label || column.key}>
+              <span
+                className="clickable"
+                onClick={() => this.raiseSort(column.path)}
+              >
+                {column.label} {this.renderSortIcon(column)}
+              </span>
             </th>
           ))}
         </tr>
