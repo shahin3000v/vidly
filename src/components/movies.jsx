@@ -13,17 +13,15 @@ class Movies extends Component {
     genres: [],
     pageSize: 4,
     currentPage: 1,
-    selectedGenre: {},
+    selectedGenre: { _id: 0, name: "All Genres" },
     sortColumn: { path: "title", order: "asc" }
   };
 
   componentDidMount() {
-    const initGenre = { _id: 0, name: "All Genres" };
-    const genres = [initGenre, ...getGenres()];
+    const genres = [{ _id: 0, name: "All Genres" }, ...getGenres()];
     this.setState({
       movies: getMovies(),
-      genres,
-      selectedGenre: initGenre
+      genres
     });
   }
 
@@ -57,8 +55,7 @@ class Movies extends Component {
     // }
     this.setState({ sortColumn });
   };
-
-  render() {
+  getPagedData = () => {
     const {
       currentPage,
       pageSize,
@@ -66,22 +63,36 @@ class Movies extends Component {
       selectedGenre,
       sortColumn
     } = this.state;
-    if (this.state.movies.length === 0) {
-      return (
-        <p className="h4 alert-warning mt-3">There is no record in database!</p>
-      );
-    }
     const filteredByGenre = selectedGenre._id
       ? allMovies.filter(m => m.genre.name === selectedGenre.name)
       : allMovies;
 
-    //console.log(selectedGenre); //why this line appears twice in console?
+    const count = filteredByGenre.length;
     const sortedList = _.orderBy(
       filteredByGenre,
       [sortColumn.path],
       [sortColumn.order]
     );
     const showList = paginate(sortedList, currentPage, pageSize);
+    return { showList, count };
+  };
+
+  render() {
+    const {
+      currentPage,
+      pageSize,
+      movies: allMovies,
+      sortColumn,
+      selectedGenre
+    } = this.state;
+
+    if (allMovies.length === 0) {
+      return (
+        <p className="h4 alert-warning mt-3">There is no record in database!</p>
+      );
+    }
+
+    const { showList, count } = this.getPagedData();
 
     return (
       <div className="row">
@@ -94,7 +105,7 @@ class Movies extends Component {
         </div>
         <div className="col">
           <p className="h4 alert-success mb-0">
-            Showing {filteredByGenre.length} movies in database
+            Showing {count} movies in database ({selectedGenre.name} )
           </p>
           <MoviesTable
             likeMedium={this.toggleLikeHandler}
@@ -104,7 +115,7 @@ class Movies extends Component {
             sortColumn={sortColumn}
           />
           <Pagination
-            itemsCount={filteredByGenre.length}
+            itemsCount={count}
             pageSize={pageSize}
             currentPage={currentPage}
             onPaginate={this.paginationHandler}
