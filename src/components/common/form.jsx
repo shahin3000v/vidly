@@ -6,7 +6,7 @@ import Select from "./select";
 class Form extends Component {
   state = {
     data: {},
-    errors: {}
+    errors: {},
   };
   validatePropertyWithJoi = ({ id, value }) => {
     const obj = { [id]: value };
@@ -22,7 +22,7 @@ class Form extends Component {
     for (let item of error.details) errors[item.path[0]] = item.message;
     return errors;
   };
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
     const errors = this.validate();
     if (errors) {
@@ -32,7 +32,7 @@ class Form extends Component {
     //do backend calls if no errors
     this.doSubmit();
   };
-  handleChange = e => {
+  handleChange = (e) => {
     let data = this.state.data;
     let errors = this.state.errors;
     const propertyError = this.validatePropertyWithJoi(e.currentTarget);
@@ -41,7 +41,7 @@ class Form extends Component {
     data[e.currentTarget.id] = e.currentTarget.value;
     this.setState({ data, errors });
   };
-  renderButton = label => {
+  renderButton = (label) => {
     return (
       <button disabled={this.validate()} className="btn btn-primary">
         {label}

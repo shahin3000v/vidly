@@ -17,48 +17,48 @@ class Movies extends Component {
     currentPage: 1,
     selectedGenre: { _id: 0, name: "All Genres" },
     sortColumn: { path: "title", order: "asc" },
-    searchQuery: ""
+    searchQuery: "",
   };
 
   componentDidMount() {
     const genres = [{ _id: 0, name: "All Genres" }, ...getGenres()];
     this.setState({
       movies: getMovies(),
-      genres
+      genres,
     });
   }
 
   deleteHandler = (id, leng) => {
     if (leng === 1 && this.state.currentPage > 1) {
-      const movies = this.state.movies.filter(film => film._id !== id);
+      const movies = this.state.movies.filter((film) => film._id !== id);
       this.setState({ movies, currentPage: this.state.currentPage - 1 });
     } else {
-      const movies = this.state.movies.filter(film => film._id !== id);
+      const movies = this.state.movies.filter((film) => film._id !== id);
       this.setState({ movies });
     }
   };
-  toggleLikeHandler = film => {
+  toggleLikeHandler = (film) => {
     let movies = this.state.movies;
-    movies = movies.map(movie => {
+    movies = movies.map((movie) => {
       if (movie === film) movie.liked = !movie.liked;
       return movie;
     });
     this.setState({ movies });
   };
-  paginationHandler = page => {
+  paginationHandler = (page) => {
     this.setState({ currentPage: page });
   };
-  genreSelectHandler = genre => {
+  genreSelectHandler = (genre) => {
     this.setState({ selectedGenre: genre, currentPage: 1, searchQuery: "" });
   };
-  sortHandler = sortColumn => {
+  sortHandler = (sortColumn) => {
     // let order = "asc";
     // if (this.state.sortColumn.path === path) {
     //   order = this.state.sortColumn.order === "asc" ? "desc" : "asc";
     // }
-    this.setState({ sortColumn });
+    this.setState({ sortColumn, currentPage: 1 });
   };
-  searchHandler = query => {
+  searchHandler = (query) => {
     //
     const searchQuery = query;
     const selectedGenre = { _id: 0, name: "All Genres" };
@@ -71,11 +71,11 @@ class Movies extends Component {
       movies: allMovies,
       selectedGenre,
       sortColumn,
-      searchQuery
+      searchQuery,
     } = this.state;
     let filtered = allMovies;
     if (searchQuery) {
-      filtered = allMovies.filter(m =>
+      filtered = allMovies.filter((m) =>
         m.title
           .toString()
           .toLowerCase()
@@ -83,7 +83,7 @@ class Movies extends Component {
       );
     } else {
       filtered = selectedGenre._id
-        ? allMovies.filter(m => m.genre.name === selectedGenre.name)
+        ? allMovies.filter((m) => m.genre.name === selectedGenre.name)
         : allMovies;
     }
     const count = filtered.length;
@@ -102,7 +102,7 @@ class Movies extends Component {
       pageSize,
       movies: allMovies,
       sortColumn,
-      selectedGenre
+      selectedGenre,
     } = this.state;
 
     if (allMovies.length === 0) {
@@ -123,7 +123,7 @@ class Movies extends Component {
           />
         </div>
         <div className="col">
-          <Link to="/movies/new" className="btn btn-primary">
+          <Link to="/movies/new" className="btn btn-primary my-1">
             New Movie
           </Link>
           <p className="h4 alert-success mb-0">
